@@ -192,3 +192,24 @@ class BiF {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+    bif : BiF = new BiF()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.bif.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.bif.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.bif.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
