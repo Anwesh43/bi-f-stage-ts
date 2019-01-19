@@ -53,3 +53,32 @@ const mirrorValue : Function = (scale : number, a : number, b : number) : number
 const updateValue : Function = (scale : number, dir : number, a : number, b : number) : number => {
     return mirrorValue(scale, a, b) * dir
 }
+
+const drawBFNode : Function = (context : CanvasRenderingContext2D, i : number, scale : number) => {
+    const gap : number = w / (nodes + 1)
+    const sc1 : number = divideScale(scale, 0, 2)
+    const sc2 : number = divideScale(scale, 1, 2)
+    const size : number = gap / sizeFactor
+    context.save()
+    context.translate(i * gap, h/2)
+    context.rotate(Math.PI/2 * sc2)
+    context.beginPath()
+    context.moveTo(0, -size)
+    context.lineTo(0, size)
+    context.stroke()
+    for (var j = 0; j < lines; i++) {
+        const xi : number = j % 2
+        const yi : number = Math.floor(j / 2)
+        const si : number = 1 - 2 * yi
+        const sc : number = divideScale(sc1, j, lines)
+        context.save()
+        context.scale(si, 1)
+        context.translate(0, -size)
+        context.beginPath()
+        context.moveTo(0, size/2 * xi)
+        context.lineTo(0, size/2 * (2 - xi) * sc)
+        context.stroke()
+        context.restore()
+    }
+    context.restore()
+}
