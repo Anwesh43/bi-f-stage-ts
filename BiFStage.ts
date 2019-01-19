@@ -6,6 +6,7 @@ const scDiv : number = 0.51
 const sizeFactor : number = 3
 const strokeFactor : number = 90
 const backColor : string = "#BDBDBD"
+const foreColor : string = "#4CAF50"
 class BiFStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
@@ -34,6 +35,7 @@ class BiFStage {
 
     static init() {
         const stage : BiFStage = new BiFStage()
+        stage.initCanvas()
         stage.render()
         stage.handleTap()
     }
@@ -55,7 +57,7 @@ const mirrorValue : Function = (scale : number, a : number, b : number) : number
 }
 
 const updateValue : Function = (scale : number, dir : number, a : number, b : number) : number => {
-    return mirrorValue(scale, a, b) * dir
+    return mirrorValue(scale, a, b) * dir * scGap
 }
 
 const drawBFNode : Function = (context : CanvasRenderingContext2D, i : number, scale : number) => {
@@ -63,14 +65,17 @@ const drawBFNode : Function = (context : CanvasRenderingContext2D, i : number, s
     const sc1 : number = divideScale(scale, 0, 2)
     const sc2 : number = divideScale(scale, 1, 2)
     const size : number = gap / sizeFactor
+    context.strokeStyle = foreColor
+    context.lineCap = 'round'
+    context.lineWidth = Math.min(w, h) / strokeFactor
     context.save()
-    context.translate(i * gap, h/2)
+    context.translate(i * gap + gap, h/2)
     context.rotate(Math.PI/2 * sc2)
     context.beginPath()
     context.moveTo(0, -size)
     context.lineTo(0, size)
     context.stroke()
-    for (var j = 0; j < lines; i++) {
+    for (var j = 0; j < lines; j++) {
         const xi : number = j % 2
         const yi : number = Math.floor(j / 2)
         const si : number = 1 - 2 * yi
@@ -80,7 +85,7 @@ const drawBFNode : Function = (context : CanvasRenderingContext2D, i : number, s
         context.translate(0, -size)
         context.beginPath()
         context.moveTo(0, size/2 * xi)
-        context.lineTo(0, size/2 * (2 - xi) * sc)
+        context.lineTo(size/2 * (2 - xi) * sc, size/2 * xi)
         context.stroke()
         context.restore()
     }
